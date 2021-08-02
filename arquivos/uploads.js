@@ -1,11 +1,21 @@
 const fs = require('fs');
+const path = require('path');
 
-module.exports = (path, filename, cb) => {
+module.exports = (caminho, filename, cb) => {
 
-    const dest = `./assets/img/${filename}`;
+    const validTypes = ['jpg', 'png', 'jpeg'];
+    const type = path.extname(caminho);
+    const isValidType = validTypes.indexOf(type.substr(1));
 
-    fs.createReadStream(path)
-        .pipe(fs.createWriteStream(dest))
-        .on("finish", () => cb(dest));
+    if (isValidType === -1) console.log('Erro! Tipo Inválido!');
+    else {
+
+        const dest = `./assets/img/${filename}${type}`;
+
+        fs.createReadStream(caminho)
+            .pipe(fs.createWriteStream(dest))
+            .on("finish", () => cb(dest));
+
+    }
 
 }
