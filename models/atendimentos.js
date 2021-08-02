@@ -11,7 +11,7 @@ class Atendimentos {
         const validacoes = [
             {
                 nome: 'data',
-                valido: moment(data).isAfter(dataCriacao),
+                valido: moment(data).isAfter(moment()),
                 mensagem: 'Informe uma data futura',
             },
             {
@@ -33,7 +33,7 @@ class Atendimentos {
             const q = "INSERT INTO atendimentos SET ?";
             connection.query(q, atendimentoDatado, (err, result) => {
                 if (err) res.status(400).json(err);
-                else res.status(201).json(result);
+                else res.status(201).json({id: result.insertId, ...atendimentoDatado});
             });
 
         }
@@ -71,7 +71,16 @@ class Atendimentos {
 
         connection.query(q, [valores, id], (err, result) => {
             if (err) res.status(400).json(err);
-            else res.status(200).json(result);
+            else res.status(200).json({...valores, id});
+        });
+    }
+
+    delete(id, res) {
+        const q = 'DELETE FROM atendimentos WHERE id=?';
+
+        connection.query(q, id, (err, results) => {
+            if (err) res.status(400).json(err);
+            else res.status(200).json({ deletedId: id });
         });
     }
 
