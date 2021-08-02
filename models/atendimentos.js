@@ -39,6 +39,27 @@ class Atendimentos {
 
     }
 
+    read(res) {
+
+        const q = 'SELECT * FROM atendimentos';
+
+        connection.query(q, (err, results) => {
+            if (err) res.status(500).json(err);
+            else res.status(200).json(results);
+        });
+
+    }
+
+    searchForID(id, res) {
+        const q = `SELECT * FROM atendimentos WHERE id=${id}`;
+
+        connection.query(q, (err, result) => {
+            const atendimento = result[0];
+            if (err) res.status(400).json(err);
+            else res.status(200).json(atendimento);
+        });
+    }
+
 }
 
 module.exports = new Atendimentos;
