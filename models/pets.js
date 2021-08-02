@@ -1,5 +1,5 @@
 const connection = require('../infraestrutura/connection');
-const uploadFile = require('../arquivos/uploads');
+const uploadFile = require('../infraestrutura/arquivos/uploads');
 
 class Pets {
 
