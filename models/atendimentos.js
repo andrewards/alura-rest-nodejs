@@ -1,16 +1,17 @@
+const moment = require('moment');
 const connection = require('../infraestrutura/connection');
 
 class Atendimentos {
 
     create(atendimento, res) {
 
-        const dataCriacao = new Date();
-        const data = new Date(atendimento.data);
+        const dataCriacao = moment().format('YYYY-MM-DD HH:MM:SS');
+        const data = moment(atendimento.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS');
 
         const validacoes = [
             {
                 nome: 'data',
-                valido: data.getTime() > dataCriacao.getTime(),
+                valido: moment(data).isAfter(dataCriacao),
                 mensagem: 'Informe uma data futura',
             },
             {
@@ -57,6 +58,20 @@ class Atendimentos {
             const atendimento = result[0];
             if (err) res.status(400).json(err);
             else res.status(200).json(atendimento);
+        });
+    }
+
+    update(id, valores, res) {
+        
+        if (valores.data) {
+            valores.data = moment(valores.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS');
+        }
+
+        const q = 'UPDATE atendimentos SET ? WHERE id=?';
+
+        connection.query(q, [valores, id], (err, result) => {
+            if (err) res.status(400).json(err);
+            else res.status(200).json(result);
         });
     }
 
