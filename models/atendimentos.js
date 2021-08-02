@@ -6,10 +6,14 @@ class Atendimentos {
         
         const q = "INSERT INTO atendimentos SET ?";
 
-        connection.query(q, atendimento, (err, result) => {
+        const dataCriacao = new Date();
+        const data = new Date(atendimento.data);
+        const atendimentoDatado = {...atendimento, dataCriacao, data};
+
+        connection.query(q, atendimentoDatado, (err, result) => {
             if (err) console.log(err);
             else console.log(result);
-        })
+        });
 
     }
 
