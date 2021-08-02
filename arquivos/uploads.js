@@ -1,10 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-fs.readFile(path.resolve(__dirname, '..', 'assets', 'lulu.jpg'), (err, buffer) => {
-    console.log('imagem foi bufferizada!');
-
-    fs.writeFile('./assets/lulu2.jpg', buffer, err => {
-        console.log('imagem foi escrita!');
+fs.createReadStream(path.resolve(__dirname, '..', 'assets', 'lulu.jpg'))
+    .pipe(fs.createWriteStream(path.resolve(__dirname, '..', 'assets', 'lulu-stream.jpg')))
+    .on("finish", () => {
+        console.log('Imagem foi escrita com sucesso!');
     });
-});
