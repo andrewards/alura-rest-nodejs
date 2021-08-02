@@ -1,8 +1,11 @@
 const fs = require('fs');
-const path = require('path');
 
-fs.createReadStream(path.resolve(__dirname, '..', 'assets', 'lulu.jpg'))
-    .pipe(fs.createWriteStream(path.resolve(__dirname, '..', 'assets', 'lulu-stream.jpg')))
-    .on("finish", () => {
-        console.log('Imagem foi escrita com sucesso!');
-    });
+module.exports = (path, filename, cb) => {
+
+    const dest = `./assets/img/${filename}`;
+
+    fs.createReadStream(path)
+        .pipe(fs.createWriteStream(dest))
+        .on("finish", () => cb(dest));
+
+}
