@@ -2,7 +2,7 @@ const connection = require('../infraestrutura/connection');
 
 class Atendimentos {
 
-    create(atendimento) {
+    create(atendimento, res) {
         
         const q = "INSERT INTO atendimentos SET ?";
 
@@ -11,8 +11,8 @@ class Atendimentos {
         const atendimentoDatado = {...atendimento, dataCriacao, data};
 
         connection.query(q, atendimentoDatado, (err, result) => {
-            if (err) console.log(err);
-            else console.log(result);
+            if (err) res.status(400).json(err);
+            else res.status(201).json(result);
         });
 
     }
