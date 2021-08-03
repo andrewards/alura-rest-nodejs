@@ -1,12 +1,13 @@
 const axios = require('axios');
 const moment = require('moment');
 const connection = require('../infraestrutura/database/connection');
+const repositorio = require('../repositorio/atendimentos');
 
 class Atendimentos {
 
-    create(atendimento, res) {
+    create(atendimento) {
 
-        const dataCriacao = moment().format('YYYY-MM-DD HH:MM:SS');
+        const dataCriacao = moment().format('YYYY-MM-DD HH:MM:ss');
         const data = moment(atendimento.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS');
 
         const validacoes = [
@@ -26,16 +27,13 @@ class Atendimentos {
         const existemErros = erros.length;
 
         if (existemErros) {
-            res.status(400).json(erros);
+            return new Promise((resolve, reject) => reject(erros));
         } else {
 
             const atendimentoDatado = {...atendimento, dataCriacao, data};
 
-            const q = "INSERT INTO atendimentos SET ?";
-            connection.query(q, atendimentoDatado, (err, result) => {
-                if (err) res.status(400).json(err);
-                else res.status(201).json({id: result.insertId, ...atendimentoDatado});
-            });
+            return repositorio.create(atendimentoDatado)
+                .then(results => ({id: results.insertId, ...atendimentoDatado}));
 
         }
 

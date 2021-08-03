@@ -8,3 +8,5 @@ const execute = (q, params = '') => {
         });
     });
 }
+
+module.exports = execute
