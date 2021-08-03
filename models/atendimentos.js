@@ -5,25 +5,46 @@ const repositorio = require('../repositorio/atendimentos');
 
 class Atendimentos {
 
-    create(atendimento) {
+    constructor() {
+        this.isValidData = ({data, dataCriacao}) => moment(data).isAfter(dataCriacao);
+        this.isValidCliente = (length) => length >= 5;
+        this.valida = (params) => this.validacoes.filter(campo => {
+            const { nome } = campo;
+            const param = params[nome];
 
-        const dataCriacao = moment().format('YYYY-MM-DD HH:MM:ss');
-        const data = moment(atendimento.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS');
-
-        const validacoes = [
+            return !campo.valido(param);
+        });
+        this.validacoes = [
             {
                 nome: 'data',
-                valido: moment(data).isAfter(moment()),
+                valido: this.isValidData,
                 mensagem: 'Informe uma data futura',
             },
             {
                 nome: 'cliente',
-                valido: atendimento.cliente.length >= 5,
+                valido: this.isValidCliente,
                 mensagem: 'O cliente deve ter pelo menos 5 caracteres'
             }
         ];
+    }
 
-        const erros = validacoes.filter(campo => !campo.valido);
+    create(atendimento) {
+
+        const dataCriacao = moment().format('YYYY-MM-DD HH:MM:SS');
+        const data = moment(atendimento.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS');
+
+        
+        const params = {
+            data: {
+                data,
+                dataCriacao,
+            },
+            cliente: {
+                length: atendimento.cliente.length,
+            }
+        }
+
+        const erros = this.valida(params);
         const existemErros = erros.length;
 
         if (existemErros) {
